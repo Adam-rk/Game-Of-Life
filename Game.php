@@ -28,20 +28,25 @@ class Game {
     }
 
     public function newGeneration($board) {
-
+        $newBoard = [];
         for ($i = 0; $i < count($board); $i++) {
             for ($j = 0; $j < count($board[$i]); $j++) {
                 $firstIndex = [$i-1, $i, $i+1];
                 $secondIndex = [$j-1, $j, $j+1];
                 $neighbors = [];
 
+
                 foreach ($firstIndex as $a) {
                     foreach ($secondIndex as $b) {
-                        if (!empty($board[$a][$b]) && $board[$a][$b] != $board[$i][$j]){
-                            $neighbors[] = $board[$a][$b];
-                        }
+                       if (($a < count($board) && $a >= 0) && ($b < count($board[$i]) && $b >= 0)){
+                            if (!($a == $i && $b == $j)) {
+                                $neighbors[] = $board[$a][$b];
+                            }
+                       }
+
                     }
                 }
+
                 $aliveNeighbors = 0;
 
                 foreach ($neighbors as $neighbor) {
@@ -49,20 +54,21 @@ class Game {
                         $aliveNeighbors++;
                     }
                 }
+                $newBoard[$i][$j] = new Cell;
                 if ($board[$i][$j]->getState() == 0 && $aliveNeighbors == 3) {
-                    $board[$i][$j]->setState(1);
+                    $newBoard[$i][$j]->setState(1);
                 } elseif ($board[$i][$j]->getState() == 1 && ($aliveNeighbors == 2 || $aliveNeighbors == 3)) {
-                    continue;
+                    $newBoard[$i][$j]->setState(1);
                 } else {
-                    $board[$i][$j]->setState(0);
+                    $newBoard[$i][$j]->setState(0);
                 }
             }
         }
 
         $this->currentGeneration++;
-
         sleep(1);
-        system('clear');
+        //system('clear');
+        return $newBoard;
     }
 
 

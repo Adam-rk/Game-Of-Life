@@ -8,6 +8,7 @@ class World extends Game {
     {
         parent::__construct();
         $this->setCurrentGeneration(0);
+
     }
 
 
@@ -17,8 +18,8 @@ class World extends Game {
         if ($mode == 0){
             $this->generateBoard(0);
             do {
-                $this->displayBoard(0);
-                $this->newGeneration($this->board);
+                $this->displayBoard(0, true);
+                $this->board = $this->newGeneration($this->board);
             }while(true);
         } else {
             $this->generateBoard(1);
@@ -81,6 +82,11 @@ class World extends Game {
                 }
             }
             echo("\n");
+        }
+
+        if ($addDimensions) {
+            $this->setRow($this->getRow()+1);
+            $this->setCol($this->getCol()+1);
         }
     }
 
