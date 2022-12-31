@@ -18,8 +18,9 @@ class World extends Game {
         if ($mode == 0){
             $this->generateBoard(0);
             do {
-                $this->displayBoard(0, true);
+                $this->displayBoard(0);
                 $this->board = $this->newGeneration($this->board);
+                $this->updateBoard($this->board);
             }while(true);
         } else {
             $this->generateBoard(1);
@@ -46,11 +47,29 @@ class World extends Game {
 
         for ($i = 0; $i < $this->getRow(); $i++) {
             for ($j = 0; $j < $this->getCol(); $j++) {
-                $board[$i][] = new Cell();
-                if ($state == 0) {
-                    $board[$i][$j]->setState(rand(0, 1));
-                }
+                    $board[$i][] = new Cell();
+                    if ($state == 0) {
+                        $board[$i][$j]->setState(rand(0, 1));
+                    }
 
+            }
+        }
+        $this->board =  $board;
+    }
+
+    public function updateBoard($board) {
+
+        $this->setRow($this->getRow()+1);
+        $this->setCol($this->getCol()+1);
+        for ($i = 0; $i < $this->getRow(); $i++) {
+            if ($i >= count($board)) {
+                $board[] = [];
+            }
+            for ($j = 0; $j < $this->getCol(); $j++) {
+                if ($j >= count($board[$i])) {
+                    $board[$i][] = new Cell();
+                    $board[$i][$j]->setState(0);
+                }
             }
         }
         $this->board =  $board;
@@ -69,9 +88,9 @@ class World extends Game {
         }
 
 
-        for ($i = 0; $i < $this->getRow(); $i++) {
+        for ($i = 0; $i < count($this->board); $i++) {
              echo ($state == 1) ? $i . " " : "";
-            for ($j = 0; $j < $this->getCol(); $j++) {
+            for ($j = 0; $j < count($this->board[$i]); $j++) {
                     switch ($this->board[$i][$j]->getState()) {
                     case 0:
                         echo ".  ";
@@ -83,17 +102,11 @@ class World extends Game {
             }
             echo("\n");
         }
-
-        if ($addDimensions) {
-            $this->setRow($this->getRow()+1);
-            $this->setCol($this->getCol()+1);
-        }
     }
 
     public function chooseCell() {
         $continue = 1;
         $array = [];
-
         do {
             do {
                 system('clear');
